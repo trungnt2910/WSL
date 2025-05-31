@@ -867,7 +867,7 @@ int ListDistributionsHelper(_In_ ListOptions options)
             {
                 for (const auto& [name, versions] : *distributions.ModernDistributions)
                 {
-                    for (auto i = 0; i < versions.size(); i++)
+                    for (size_t i = 0; i < versions.size(); i++)
                     {
                         if (!options.all && i > 3)
                         {

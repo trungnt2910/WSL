@@ -49,7 +49,7 @@ void wsl::windows::common::ConsoleProgressIndicator::UpdateProgress(std::wstring
         return;
     }
 
-    for (auto i = 0; i < m_progressMessage.size(); i++)
+    for (size_t i = 0; i < m_progressMessage.size(); i++)
     {
         fwprintf(stderr, L"\b \b");
     }

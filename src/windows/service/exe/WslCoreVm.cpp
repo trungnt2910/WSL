@@ -93,7 +93,7 @@ RequiredExtraMmioSpaceForPmemFileInMb(_In_ PCWSTR FilePath)
 
     // The file is mapped to the VM using PCI BARs, which can only be a power of two. Therefore,
     // round the file size up to the nearest power of two.
-    fileSizeBytes.QuadPart = wsl::windows::common::helpers::RoundUpToNearestPowerOfTwo(fileSizeBytes.QuadPart);
+    fileSizeBytes.QuadPart = wsl::windows::common::helpers::RoundUpToNearestPowerOfTwo((SIZE_T)fileSizeBytes.QuadPart);
 
     // Convert from bytes to megabytes. Ensure that we don't truncate a 512kb file to 0mb.
     return std::max(fileSizeBytes.QuadPart / static_cast<INT64>(_1MB), 1i64);

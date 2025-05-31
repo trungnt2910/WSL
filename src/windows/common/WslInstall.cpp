@@ -67,7 +67,7 @@ std::vector<std::wstring> GetInstalledOptionalComponents()
 std::vector<BYTE> ParseHex(const std::wstring& input)
 {
     std::vector<BYTE> result;
-    for (auto i = 0; i < input.size(); i += 2)
+    for (size_t i = 0; i < input.size(); i += 2)
     {
         // Skip '0x', if any
         if (i == 0 && input[0] == '0' && tolower(input[1]) == 'x')

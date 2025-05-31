@@ -148,7 +148,7 @@ public:
         const int64_t diff = sizeof(TMessage) - m_buffer.size();
         if (diff > 0)
         {
-            InsertBuffer(diff);
+            InsertBuffer((size_t)diff);
         }
 
         return gsl::make_span(m_buffer);

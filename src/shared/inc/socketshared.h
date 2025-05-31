@@ -44,7 +44,7 @@ try
     {
         return {};
     }
-    else if (BytesRead < MessageSize)
+    else if ((size_t)BytesRead < MessageSize)
     {
 #if defined(_MSC_VER)
         THROW_HR(E_UNEXPECTED);
@@ -58,7 +58,7 @@ try
     if (MessageSize < sizeof(MESSAGE_HEADER))
     {
 #if defined(_MSC_VER)
-        THROW_HR_MSG(E_UNEXPECTED, "Unexpected message size: %llu", MessageSize);
+        THROW_HR_MSG(E_UNEXPECTED, "Unexpected message size: %llu", (unsigned long long)MessageSize);
 #elif defined(__GNUC__)
         THROW_UNEXCEPTED();
 #endif

@@ -331,7 +331,7 @@ public:
     {
         int argumentPosition = 0;
         bool stopParameters = false;
-        for (size_t i = m_startIndex; i < m_argc; i++)
+        for (size_t i = m_startIndex; i < (size_t)m_argc; i++)
         {
             if (!stopParameters && wsl::shared::string::IsEqual(m_argv[i], TEXT("--")))
             {
@@ -377,7 +377,7 @@ public:
                         {
                             value = m_argv[i]; // Positonal arguments directly receive arvg[i]
                         }
-                        else if (i + 1 < m_argc)
+                        else if (i + 1 < (size_t)m_argc)
                         {
                             value = m_argv[i + 1];
                         }
@@ -407,7 +407,7 @@ public:
                 THROW_USER_ERROR(wsl::shared::Localization::MessageInvalidCommandLine(m_argv[i], m_name ? m_name : m_argv[0]));
             }
 
-            if (i < m_argc && m_argv[i - offset][0] != '-')
+            if (i < (size_t)m_argc && m_argv[i - offset][0] != '-')
             {
                 argumentPosition++;
             }

@@ -440,7 +440,7 @@ void wsl::windows::common::registry::WriteQword(_In_ HKEY Key, _In_ LPCWSTR SubK
 
 void wsl::windows::common::registry::WriteDefaultString(_In_ HKEY Key, _In_ LPCWSTR Value)
 {
-    SIZE_T StringLength = wcslen(Value);
+    size_t StringLength = wcslen(Value);
     THROW_IF_FAILED(SizeTAdd(StringLength, 1, &StringLength));
     THROW_IF_FAILED(SizeTMult(StringLength, sizeof(WCHAR), &StringLength));
 
@@ -453,7 +453,7 @@ void wsl::windows::common::registry::WriteDefaultString(_In_ HKEY Key, _In_ LPCW
 
 void wsl::windows::common::registry::WriteString(_In_ HKEY Key, _In_ LPCWSTR SubKey, _In_ LPCWSTR ValueName, _In_ LPCWSTR Value)
 {
-    SIZE_T StringLength = wcslen(Value);
+    size_t StringLength = wcslen(Value);
     THROW_IF_FAILED(SizeTAdd(StringLength, 1, &StringLength));
     THROW_IF_FAILED(SizeTMult(StringLength, sizeof(WCHAR), &StringLength));
 
@@ -490,7 +490,7 @@ void wsl::windows::common::registry::WriteStringSet(_In_ HKEY Key, _In_ LPCWSTR 
     // Store the value in the registry.
     //
 
-    SIZE_T ValueSize;
+    size_t ValueSize;
     THROW_IF_FAILED(SizeTMult(Value.size(), sizeof(WCHAR), &ValueSize));
     THROW_HR_IF(E_INVALIDARG, (ValueSize > (SIZE_T)DWORD_MAX));
 

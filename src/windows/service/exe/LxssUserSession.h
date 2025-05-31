@@ -259,19 +259,18 @@ public:
     /// <summary>
     /// Registers a distribution.
     /// </summary>
-    HRESULT RegisterDistribution(
+    IFACEMETHOD(RegisterDistribution)(
         _Inout_ LPCWSTR DistributionName, _In_ ULONG Version, _In_opt_ HANDLE TarGzFile, _In_opt_ HANDLE TarGzPipe, _In_ LPCWSTR TargetDirectory) override;
 
     /// <summary>
     /// Unregisters a distribution.
     /// </summary>
-    HRESULT
-    UnregisterDistribution(_In_ LPCWSTR DistributionName) override;
+    IFACEMETHOD(UnregisterDistribution)(_In_ LPCWSTR DistributionName) override;
 
     /// <summary>
     /// Returns the configuration for the specified distribution.
     /// </summary>
-    HRESULT GetDistributionConfiguration(
+    IFACEMETHOD(GetDistributionConfiguration)(
         _In_ LPCWSTR DistributionName,
         _Out_ ULONG* Version,
         _Out_ ULONG* DefaultUid,
@@ -282,17 +281,17 @@ public:
     /// <summary>
     /// Configures a distribution.
     /// </summary>
-    HRESULT SetDistributionConfiguration(_In_ LPCWSTR DistributionName, _In_ ULONG DefaultUid, _In_ ULONG WslFlags) override;
+    IFACEMETHOD(SetDistributionConfiguration)(_In_ LPCWSTR DistributionName, _In_ ULONG DefaultUid, _In_ ULONG WslFlags) override;
 
     /// <summary>
     /// Returns a list of runnable distributions.
     /// </summary>
-    HRESULT ListDistributions(_Out_ ULONG* Count, _Out_ LPWSTR** Distributions) override;
+    IFACEMETHOD(ListDistributions)(_Out_ ULONG* Count, _Out_ LPWSTR** Distributions) override;
 
     /// <summary>
     /// Creates an instance of the specified distro.
     /// </summary>
-    HRESULT CreateInstance(_In_ LPCWSTR DistributionName, _In_ ULONG Flags) override;
+    IFACEMETHOD(CreateInstance)(_In_ LPCWSTR DistributionName, _In_ ULONG Flags) override;
 
 private:
     std::weak_ptr<LxssUserSessionImpl> m_session;

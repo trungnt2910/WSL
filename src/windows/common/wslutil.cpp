@@ -646,7 +646,7 @@ wsl::windows::common::ErrorStrings wsl::windows::common::wslutil::ErrorToString(
     std::wstringstream errorCode;
     bool first = true;
     const std::bitset<64> bits(error.Context);
-    for (auto i = 0; i < bits.size(); i++)
+    for (size_t i = 0; i < bits.size(); i++)
     {
         if (bits[i])
         {
