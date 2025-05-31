@@ -1,7 +1,7 @@
 set(SOURCES
     wsldeps.cpp)
 
-    set(HEADERS
+set(HEADERS
     include/lxcore/lxbusapi.h
     include/lxcore/lxcoreapi.h
     include/windows/p9rdr.h

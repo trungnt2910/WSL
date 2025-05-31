@@ -466,6 +466,11 @@ endif()
 
 add_subdirectory(wsldeps)
 
+if (${TARGET_PLATFORM} STREQUAL "win32")
+    add_subdirectory(stubs/computecore)
+    add_subdirectory(stubs/computenetwork)
+endif()
+
 if(DEFINED ENV{WSL_POST_BUILD_COMMAND})
     set(WSL_POST_BUILD_COMMAND $ENV{WSL_POST_BUILD_COMMAND})
 endif ()

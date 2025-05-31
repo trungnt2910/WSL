@@ -82,7 +82,11 @@ add_dependencies(wslservice wslserviceidl wslservicemc)
 add_compile_definitions(__WRL_CLASSIC_COM__)
 add_compile_definitions(__WRL_DISABLE_STATIC_INITIALIZE__)
 add_compile_definitions(USE_COM_CONTEXT_DEF=1)
-set_target_properties(wslservice PROPERTIES LINK_FLAGS "/merge:minATL=.rdata /include:__minATLObjMap_LxssUserSession_COM")
+if ("${TARGET_PLATFORM}" STREQUAL "win32")
+    set_target_properties(wslservice PROPERTIES LINK_FLAGS "/merge:minATL=.rdata /include:___minATLObjMap_LxssUserSession_COM")
+else()
+    set_target_properties(wslservice PROPERTIES LINK_FLAGS "/merge:minATL=.rdata /include:__minATLObjMap_LxssUserSession_COM")
+endif()
 target_link_libraries(wslservice
                       ${COMMON_LINK_LIBRARIES}
                       common
@@ -91,6 +95,11 @@ target_link_libraries(wslservice
                       VirtDisk.lib
                       Winhttp.lib
                       Synchronization.lib)
+
+if ("${TARGET_PLATFORM}" STREQUAL "win32")
+    add_dependencies(wslservice computecore computenetwork)
+    target_link_libraries(wslservice computecore computenetwork)
+endif()
 
 target_precompile_headers(wslservice REUSE_FROM common)
 set_target_properties(wslservice PROPERTIES FOLDER windows)
