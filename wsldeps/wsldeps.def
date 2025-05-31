@@ -1,0 +1,12 @@
+LIBRARY ntdll
+EXPORTS
+  NtQueryInformationFile
+  NtSetInformationFile
+  ZwQueryEaFile
+  NtQueryDirectoryFile
+  ZwSetEaFile
+  NtCreateNamedPipeFile
+  ZwQueryKey
+  ZwCreateEvent
+  NtReadFile
+  NtWriteFile

@@ -459,6 +459,7 @@ if (DEFINED PIPELINE_BUILD_ID)
     add_subdirectory(cloudtest)
 endif()
 
+add_subdirectory(wsldeps)
 
 if(DEFINED ENV{WSL_POST_BUILD_COMMAND})
     set(WSL_POST_BUILD_COMMAND $ENV{WSL_POST_BUILD_COMMAND})
