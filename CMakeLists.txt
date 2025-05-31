@@ -10,6 +10,9 @@ if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "arm64" OR "${TARGET_PLATFORM}" STREQU
 elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "win32|x86" OR "${TARGET_PLATFORM}" MATCHES "win32|x86")
     set(TARGET_PLATFORM "win32")
     set(TEST_DISTRO_PLATFORM "i386")
+elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "arm32|arm" OR "${TARGET_PLATFORM}" MATCHES "arm32|arm")
+    set(TARGET_PLATFORM "arm")
+    set(TEST_DISTRO_PLATFORM "armhf")
 elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "x64|amd64|" OR "${TARGET_PLATFORM}" MATCHES "x64|amd64|")
     set(TARGET_PLATFORM "x64")
     set(TEST_DISTRO_PLATFORM "amd64")
@@ -63,7 +66,7 @@ find_nuget_package(Microsoft.Identity.MSAL.WSL.Proxy MSAL /build/native/bin)
 find_nuget_package(Microsoft.RemoteDesktop.Client.MSRDC.SessionHost MSRDC /build/native/bin)
 find_nuget_package(Microsoft.Taef TAEF /)
 find_nuget_package(Microsoft.Windows.ImplementationLibrary WIL /)
-if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
     find_nuget_package(Microsoft.WSL.DeviceHost WSL_DEVICE_HOST /build/native)
     find_nuget_package(Microsoft.WSL.Kernel KERNEL /build/native)
 endif()
@@ -89,7 +92,7 @@ if (${TARGET_PLATFORM} STREQUAL "arm64")
 endif()
 
 # Wsl Settings packages
-if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
     find_nuget_package(CommunityToolkit.Mvvm CTK_MVVM /)
     find_nuget_package(CommunityToolkit.WinUI.Animations CTK_ANIMATIONS /)
     find_nuget_package(CommunityToolkit.WinUI.Controls.SettingsControls CTK_STTNGS_CTRLS /)
@@ -101,7 +104,7 @@ if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
     find_nuget_package(WinUIEx WINUIEX /)
 endif()
 
-if ("${TARGET_PLATFORM}" STREQUAL "win32")
+if ("${TARGET_PLATFORM}" MATCHES "win32|arm")
     set(WSLDEPS_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/wsldeps)
 endif()
 
@@ -162,7 +165,7 @@ set (GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
 file(MAKE_DIRECTORY ${GENERATED_DIR})
 
 set(PACKAGE_CERTIFICATE ${GENERATED_DIR}/dev-cert.pfx)
-if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
     file(CREATE_LINK ${WSL_DEVICE_HOST_SOURCE_DIR}/bin/${TARGET_PLATFORM}/wsldevicehost.dll ${BIN}/wsldevicehost.dll)
     file(CREATE_LINK ${LXUTIL_SOURCE_DIR}/bin/lxutil.dll ${BIN}/lxutil.dll)
     file(CREATE_LINK ${WSLG_SOURCE_DIR}/${TARGET_PLATFORM}/${WSLG_TS_PLUGIN_DLL} ${BIN}/${WSLG_TS_PLUGIN_DLL})
@@ -206,6 +209,10 @@ if (${TARGET_PLATFORM} STREQUAL "win32")
     add_compile_definitions(_I386_)
 endif()
 
+if (${TARGET_PLATFORM} STREQUAL "arm")
+    add_compile_definitions(_ARM_)
+endif()
+
 add_definitions(/sdl) # Default-initialize class members
 add_definitions(/FS) # Enable parallel PDB access
 add_compile_definitions(UNICODE
@@ -242,6 +249,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /W3 /WX /ZH:SHA_256")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /Z7 -DDEBUG -DDBG")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi /guard:cf /Qspectre")
 
+if (${TARGET_PLATFORM} STREQUAL "arm")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHs")
+endif()
+
 # Linker flags
 set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /debug:full /debugtype:cv,fixup /guard:cf /DYNAMICBASE")
 set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /debug:full /debugtype:cv,fixup /guard:cf /DYNAMICBASE")
@@ -272,7 +283,7 @@ set(COMMON_LINK_LIBRARIES
     msi.lib
     wsldeps.lib)
 
-if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
     set(COMMON_LINK_LIBRARIES
         ${COMMON_LINK_LIBRARIES}
         computecore.lib
@@ -286,6 +297,8 @@ elseif(${TARGET_PLATFORM} STREQUAL "arm64")
     set(LLVM_ARCH aarch64)
 elseif(${TARGET_PLATFORM} STREQUAL "win32")
     set(LLVM_ARCH x86)
+elseif(${TARGET_PLATFORM} STREQUAL "arm")
+    set(LLVM_ARCH arm)
 else()
     message(FATAL_ERROR "Unsupported platform: '${TARGET_PLATFORM}'")
 endif()
@@ -466,7 +479,7 @@ endif()
 
 add_subdirectory(wsldeps)
 
-if (${TARGET_PLATFORM} STREQUAL "win32")
+if (${TARGET_PLATFORM} MATCHES "win32|arm")
     add_subdirectory(stubs/computecore)
     add_subdirectory(stubs/computenetwork)
 endif()

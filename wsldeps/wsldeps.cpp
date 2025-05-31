@@ -12,6 +12,13 @@
 #pragma comment(linker, "/EXPORT:_ZwQueryKey=ntdll.ZwQueryKey")
 #pragma comment(linker, "/EXPORT:_RtlDosPathNameToNtPathName_U_WithStatus=ntdll.RtlDosPathNameToNtPathName_U_WithStatus")
 
+#ifdef _ARM_
+#pragma comment(linker, "/EXPORT:CommandLineToArgvW=shell32.CommandLineToArgvW")
+#pragma comment(linker, "/EXPORT:ShellExecuteW=shell32.ShellExecuteW")
+#pragma comment(linker, "/EXPORT:ShellExecuteExW=shell32.ShellExecuteExW")
+#pragma comment(linker, "/EXPORT:SHGetKnownFolderPath=shell32.SHGetKnownFolderPath")
+#endif
+
 #include <Windows.h>
 
 extern "C"

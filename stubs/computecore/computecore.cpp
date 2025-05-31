@@ -1,23 +1,32 @@
 #include <cstdlib>
 #include <iostream>
 
-#pragma comment(linker, "/EXPORT:HcsCreateOperation@8=stub")
-#pragma comment(linker, "/EXPORT:HcsCloseOperation@4=stub")
-#pragma comment(linker, "/EXPORT:HcsWaitForOperationResult@12=stub")
+#define STUB_INTERNAL(name) \
+    __pragma(comment(linker, "/EXPORT:" #name "=stub"))
 
-#pragma comment(linker, "/EXPORT:HcsCreateComputeSystem@20=stub")
-#pragma comment(linker, "/EXPORT:HcsOpenComputeSystem@12=stub")
-#pragma comment(linker, "/EXPORT:HcsCloseComputeSystem@4=stub")
-#pragma comment(linker, "/EXPORT:HcsStartComputeSystem@12=stub")
-#pragma comment(linker, "/EXPORT:HcsTerminateComputeSystem@12=stub")
-#pragma comment(linker, "/EXPORT:HcsGetComputeSystemProperties@12=stub")
-#pragma comment(linker, "/EXPORT:HcsModifyComputeSystem@16=stub")
-#pragma comment(linker, "/EXPORT:HcsSetComputeSystemCallback@16=stub")
+#if _I386_
+#define STUB(name, bytes) STUB_INTERNAL(name@##bytes)
+#else
+#define STUB(name, _) STUB_INTERNAL(name)
+#endif
 
-#pragma comment(linker, "/EXPORT:HcsGetServiceProperties@8=stub")
+STUB(HcsCreateOperation, 8)
+STUB(HcsCloseOperation, 4)
+STUB(HcsWaitForOperationResult, 12)
 
-#pragma comment(linker, "/EXPORT:HcsGrantVmAccess@8=stub")
-#pragma comment(linker, "/EXPORT:HcsRevokeVmAccess@8=stub")
+STUB(HcsCreateComputeSystem, 20)
+STUB(HcsOpenComputeSystem, 12)
+STUB(HcsCloseComputeSystem, 4)
+STUB(HcsStartComputeSystem, 12)
+STUB(HcsTerminateComputeSystem, 12)
+STUB(HcsGetComputeSystemProperties, 12)
+STUB(HcsModifyComputeSystem, 16)
+STUB(HcsSetComputeSystemCallback, 16)
+
+STUB(HcsGetServiceProperties, 8)
+
+STUB(HcsGrantVmAccess, 8)
+STUB(HcsRevokeVmAccess, 8)
 
 extern "C" void stub()
 {

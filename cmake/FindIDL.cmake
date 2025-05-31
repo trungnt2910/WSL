@@ -12,6 +12,10 @@ function(add_idl target idl_files_with_proxy idl_files_no_proxy)
 
     string(TOLOWER ${TARGET_PLATFORM} IDL_ENV)
 
+    if (${TARGET_PLATFORM} STREQUAL "arm")
+        set(IDL_ENV "arm32")
+    endif()
+
     foreach(idl_file ${idl_files_with_proxy})
 
         cmake_path(GET idl_file STEM IDL_NAME)
