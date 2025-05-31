@@ -7,6 +7,9 @@ project(wsl)
 if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "arm64" OR "${TARGET_PLATFORM}" STREQUAL "arm64")
     set(TARGET_PLATFORM "arm64")
     set(TEST_DISTRO_PLATFORM "arm64")
+elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "win32|x86" OR "${TARGET_PLATFORM}" MATCHES "win32|x86")
+    set(TARGET_PLATFORM "win32")
+    set(TEST_DISTRO_PLATFORM "i386")
 elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "x64|amd64|" OR "${TARGET_PLATFORM}" MATCHES "x64|amd64|")
     set(TARGET_PLATFORM "x64")
     set(TEST_DISTRO_PLATFORM "amd64")
@@ -60,8 +63,10 @@ find_nuget_package(Microsoft.Identity.MSAL.WSL.Proxy MSAL /build/native/bin)
 find_nuget_package(Microsoft.RemoteDesktop.Client.MSRDC.SessionHost MSRDC /build/native/bin)
 find_nuget_package(Microsoft.Taef TAEF /)
 find_nuget_package(Microsoft.Windows.ImplementationLibrary WIL /)
-find_nuget_package(Microsoft.WSL.DeviceHost WSL_DEVICE_HOST /build/native)
-find_nuget_package(Microsoft.WSL.Kernel KERNEL /build/native)
+if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+    find_nuget_package(Microsoft.WSL.DeviceHost WSL_DEVICE_HOST /build/native)
+    find_nuget_package(Microsoft.WSL.Kernel KERNEL /build/native)
+endif()
 find_nuget_package(Microsoft.WSL.bsdtar BSDTARD /build/native/bin)
 find_nuget_package(Microsoft.WSL.LinuxSdk LINUXSDK /)
 find_nuget_package(Microsoft.WSL.TestDistro TEST_DISTRO /)
@@ -84,15 +89,17 @@ if (${TARGET_PLATFORM} STREQUAL "arm64")
 endif()
 
 # Wsl Settings packages
-find_nuget_package(CommunityToolkit.Mvvm CTK_MVVM /)
-find_nuget_package(CommunityToolkit.WinUI.Animations CTK_ANIMATIONS /)
-find_nuget_package(CommunityToolkit.WinUI.Controls.SettingsControls CTK_STTNGS_CTRLS /)
-find_nuget_package(Microsoft.Extensions.Hosting EXTS_HOSTING /)
-find_nuget_package(Microsoft.NETCore.App.Runtime.win-${TARGET_PLATFORM} DOTNET_RUNTIME /)
-find_nuget_package(Microsoft.WindowsAppSDK WIN_APP_SDK /)
-find_nuget_package(Microsoft.Windows.SDK.NET.Ref WINDOWS_SDK_DOTNET /)
-find_nuget_package(Microsoft.Xaml.Behaviors.WinUI.Managed XAML_BEHAVIORS /)
-find_nuget_package(WinUIEx WINUIEX /)
+if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+    find_nuget_package(CommunityToolkit.Mvvm CTK_MVVM /)
+    find_nuget_package(CommunityToolkit.WinUI.Animations CTK_ANIMATIONS /)
+    find_nuget_package(CommunityToolkit.WinUI.Controls.SettingsControls CTK_STTNGS_CTRLS /)
+    find_nuget_package(Microsoft.Extensions.Hosting EXTS_HOSTING /)
+    find_nuget_package(Microsoft.NETCore.App.Runtime.win-${TARGET_PLATFORM} DOTNET_RUNTIME /)
+    find_nuget_package(Microsoft.WindowsAppSDK WIN_APP_SDK /)
+    find_nuget_package(Microsoft.Windows.SDK.NET.Ref WINDOWS_SDK_DOTNET /)
+    find_nuget_package(Microsoft.Xaml.Behaviors.WinUI.Managed XAML_BEHAVIORS /)
+    find_nuget_package(WinUIEx WINUIEX /)
+endif()
 
 set(BIN2CPIO ${CMAKE_CURRENT_LIST_DIR}/tools/bin2cpio/bin2cpio.pl)
 set(WSLG_TS_PLUGIN_DLL "WSLDVCPlugin.dll")
@@ -151,10 +158,12 @@ set (GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
 file(MAKE_DIRECTORY ${GENERATED_DIR})
 
 set(PACKAGE_CERTIFICATE ${GENERATED_DIR}/dev-cert.pfx)
-file(CREATE_LINK ${WSL_DEVICE_HOST_SOURCE_DIR}/bin/${TARGET_PLATFORM}/wsldevicehost.dll ${BIN}/wsldevicehost.dll)
-file(CREATE_LINK ${LXUTIL_SOURCE_DIR}/bin/lxutil.dll ${BIN}/lxutil.dll)
-file(CREATE_LINK ${WSLG_SOURCE_DIR}/${TARGET_PLATFORM}/${WSLG_TS_PLUGIN_DLL} ${BIN}/${WSLG_TS_PLUGIN_DLL})
-file(CREATE_LINK ${WSLDEPS_SOURCE_DIR}/bin/wsldeps.dll ${BIN}/wsldeps.dll)
+if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+    file(CREATE_LINK ${WSL_DEVICE_HOST_SOURCE_DIR}/bin/${TARGET_PLATFORM}/wsldevicehost.dll ${BIN}/wsldevicehost.dll)
+    file(CREATE_LINK ${LXUTIL_SOURCE_DIR}/bin/lxutil.dll ${BIN}/lxutil.dll)
+    file(CREATE_LINK ${WSLG_SOURCE_DIR}/${TARGET_PLATFORM}/${WSLG_TS_PLUGIN_DLL} ${BIN}/${WSLG_TS_PLUGIN_DLL})
+    file(CREATE_LINK ${WSLDEPS_SOURCE_DIR}/bin/wsldeps.dll ${BIN}/wsldeps.dll)
+endif()
 
 if (${SKIP_PACKAGE_SIGNING})
     set(PACKAGE_SIGN_COMMAND echo Skipped package signing for:)
@@ -187,6 +196,10 @@ endif()
 
 if (${TARGET_PLATFORM} STREQUAL "arm64")
     add_compile_definitions(_ARM64_)
+endif()
+
+if (${TARGET_PLATFORM} STREQUAL "win32")
+    add_compile_definitions(_I386_)
 endif()
 
 add_definitions(/sdl) # Default-initialize class members
@@ -249,18 +262,25 @@ set(COMMON_LINK_LIBRARIES
     Bcrypt.lib
     Iphlpapi.lib
     icu.lib
-    computecore.lib
-    computenetwork.lib
     MI.lib
     Wintrust.lib
     msi.lib
     wsldeps.lib)
+
+if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
+    set(COMMON_LINK_LIBRARIES
+        ${COMMON_LINK_LIBRARIES}
+        computecore.lib
+        computenetwork.lib)
+endif()
 
 # Linux
 if(${TARGET_PLATFORM} STREQUAL "" OR ${TARGET_PLATFORM} STREQUAL "x64")
     set(LLVM_ARCH x86_64)
 elseif(${TARGET_PLATFORM} STREQUAL "arm64")
     set(LLVM_ARCH aarch64)
+elseif(${TARGET_PLATFORM} STREQUAL "win32")
+    set(LLVM_ARCH x86)
 else()
     message(FATAL_ERROR "Unsupported platform: '${TARGET_PLATFORM}'")
 endif()

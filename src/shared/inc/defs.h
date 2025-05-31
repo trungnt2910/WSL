@@ -57,6 +57,10 @@ inline constexpr bool Arm64 = false;
 
 inline constexpr bool Arm64 = true;
 
+#elif _I386_
+
+inline constexpr bool Arm64 = false;
+
 #else
 
 #error Unsupported compiler or build environment
