@@ -96,7 +96,7 @@ target_link_libraries(wslservice
                       Winhttp.lib
                       Synchronization.lib)
 
-if ("${TARGET_PLATFORM}" MATCHES "win32|arm")
+if ("${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     add_dependencies(wslservice computecore computenetwork)
     target_link_libraries(wslservice computecore computenetwork)
 endif()

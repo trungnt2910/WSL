@@ -10,7 +10,7 @@ if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "arm64" OR "${TARGET_PLATFORM}" STREQU
 elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "win32|x86" OR "${TARGET_PLATFORM}" MATCHES "win32|x86")
     set(TARGET_PLATFORM "win32")
     set(TEST_DISTRO_PLATFORM "i386")
-elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "arm32|arm" OR "${TARGET_PLATFORM}" MATCHES "arm32|arm")
+elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "^(arm32|arm)$" OR "${TARGET_PLATFORM}" MATCHES "^(arm32|arm)$")
     set(TARGET_PLATFORM "arm")
     set(TEST_DISTRO_PLATFORM "armhf")
 elseif("${CMAKE_GENERATOR_PLATFORM}" MATCHES "x64|amd64|" OR "${TARGET_PLATFORM}" MATCHES "x64|amd64|")
@@ -66,7 +66,7 @@ find_nuget_package(Microsoft.Identity.MSAL.WSL.Proxy MSAL /build/native/bin)
 find_nuget_package(Microsoft.RemoteDesktop.Client.MSRDC.SessionHost MSRDC /build/native/bin)
 find_nuget_package(Microsoft.Taef TAEF /)
 find_nuget_package(Microsoft.Windows.ImplementationLibrary WIL /)
-if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
+if (NOT "${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     find_nuget_package(Microsoft.WSL.DeviceHost WSL_DEVICE_HOST /build/native)
     find_nuget_package(Microsoft.WSL.Kernel KERNEL /build/native)
 endif()
@@ -92,7 +92,7 @@ if (${TARGET_PLATFORM} STREQUAL "arm64")
 endif()
 
 # Wsl Settings packages
-if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
+if (NOT "${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     find_nuget_package(CommunityToolkit.Mvvm CTK_MVVM /)
     find_nuget_package(CommunityToolkit.WinUI.Animations CTK_ANIMATIONS /)
     find_nuget_package(CommunityToolkit.WinUI.Controls.SettingsControls CTK_STTNGS_CTRLS /)
@@ -104,7 +104,7 @@ if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
     find_nuget_package(WinUIEx WINUIEX /)
 endif()
 
-if ("${TARGET_PLATFORM}" MATCHES "win32|arm")
+if ("${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     set(WSLDEPS_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/wsldeps)
 endif()
 
@@ -165,7 +165,7 @@ set (GENERATED_DIR ${CMAKE_BINARY_DIR}/generated)
 file(MAKE_DIRECTORY ${GENERATED_DIR})
 
 set(PACKAGE_CERTIFICATE ${GENERATED_DIR}/dev-cert.pfx)
-if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
+if (NOT "${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     file(CREATE_LINK ${WSL_DEVICE_HOST_SOURCE_DIR}/bin/${TARGET_PLATFORM}/wsldevicehost.dll ${BIN}/wsldevicehost.dll)
     file(CREATE_LINK ${LXUTIL_SOURCE_DIR}/bin/lxutil.dll ${BIN}/lxutil.dll)
     file(CREATE_LINK ${WSLG_SOURCE_DIR}/${TARGET_PLATFORM}/${WSLG_TS_PLUGIN_DLL} ${BIN}/${WSLG_TS_PLUGIN_DLL})
@@ -283,7 +283,7 @@ set(COMMON_LINK_LIBRARIES
     msi.lib
     wsldeps.lib)
 
-if (NOT "${TARGET_PLATFORM}" MATCHES "win32|arm")
+if (NOT "${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     set(COMMON_LINK_LIBRARIES
         ${COMMON_LINK_LIBRARIES}
         computecore.lib
@@ -479,7 +479,7 @@ endif()
 
 add_subdirectory(wsldeps)
 
-if (${TARGET_PLATFORM} MATCHES "win32|arm")
+if (${TARGET_PLATFORM} MATCHES "^(win32|arm)$")
     add_subdirectory(stubs/computecore)
     add_subdirectory(stubs/computenetwork)
 endif()
