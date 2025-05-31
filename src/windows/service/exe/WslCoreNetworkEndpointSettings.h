@@ -105,11 +105,11 @@ struct EndpointIpAddress
         }
 
         constexpr int c_numBitsPerByte = 8;
-        for (size_t i = 0, currPrefixLength = PrefixLength; i < INET_ADDR_LENGTH(Address.si_family); i++, currPrefixLength -= c_numBitsPerByte)
+        for (int i = 0, currPrefixLength = PrefixLength; i < (int)INET_ADDR_LENGTH(Address.si_family); i++, currPrefixLength -= c_numBitsPerByte)
         {
             if (currPrefixLength < c_numBitsPerByte)
             {
-                const int bitShiftAmt = c_numBitsPerByte - std::max(currPrefixLength, (size_t)0);
+                const int bitShiftAmt = c_numBitsPerByte - std::max(currPrefixLength, 0);
                 addressPointer[i] &= (0xFF >> bitShiftAmt) << bitShiftAmt;
             }
         }
