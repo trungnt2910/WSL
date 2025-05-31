@@ -423,3 +423,52 @@ T BreakBuild()
 #define GetTempPath2W(...) (BreakBuild<bool>())
 
 #endif
+
+//
+// Flag definitions for Flags in FILE_CASE_SENSITIVE_INFO.
+//
+
+#define FILE_CS_FLAG_CASE_SENSITIVE_DIR     0x00000001
+
+typedef struct _FILE_CASE_SENSITIVE_INFORMATION {
+    DWORD Flags;
+} FILE_CASE_SENSITIVE_INFORMATION, *PFILE_CASE_SENSITIVE_INFORMATION;
+
+//================ FileStatLxInformation ========================================
+
+//
+// LxFlags for FILE_STAT_LX_INFORMATION that specify which metadata fields
+// were present for the file.
+//
+
+#define LX_FILE_METADATA_HAS_UID 0x1
+#define LX_FILE_METADATA_HAS_GID 0x2
+#define LX_FILE_METADATA_HAS_MODE 0x4
+#define LX_FILE_METADATA_HAS_DEVICE_ID 0x8
+#define LX_FILE_CASE_SENSITIVE_DIR 0x10
+
+//
+// Note: Fields up through EffectiveAccess are the same as in
+// FILE_STAT_INFORMATION, and up through NumberOfLinks are the same
+// as in FILE_STAT_BASIC_INFORMATION.
+//
+
+typedef struct _FILE_STAT_LX_INFORMATION {
+    LARGE_INTEGER FileId;
+    LARGE_INTEGER CreationTime;
+    LARGE_INTEGER LastAccessTime;
+    LARGE_INTEGER LastWriteTime;
+    LARGE_INTEGER ChangeTime;
+    LARGE_INTEGER AllocationSize;
+    LARGE_INTEGER EndOfFile;
+    DWORD FileAttributes;
+    DWORD ReparseTag;
+    DWORD NumberOfLinks;
+    ACCESS_MASK EffectiveAccess;
+    DWORD LxFlags;
+    DWORD LxUid;
+    DWORD LxGid;
+    DWORD LxMode;
+    DWORD LxDeviceIdMajor;
+    DWORD LxDeviceIdMinor;
+} FILE_STAT_LX_INFORMATION, *PFILE_STAT_LX_INFORMATION;
