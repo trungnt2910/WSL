@@ -94,7 +94,7 @@ set(HEADERS
     notifications.h)
 
 add_library(common STATIC ${SOURCES} ${HEADERS})
-add_dependencies(common wslserviceidl localization wslservicemc wslinstalleridl)
+add_dependencies(common wslserviceidl localization wslservicemc wslinstalleridl wsldeps)
 
 target_precompile_headers(common PRIVATE precomp.h)
 set_target_properties(common PROPERTIES FOLDER windows)

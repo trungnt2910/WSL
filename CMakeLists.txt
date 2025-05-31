@@ -101,6 +101,10 @@ if (NOT "${TARGET_PLATFORM}" STREQUAL "win32")
     find_nuget_package(WinUIEx WINUIEX /)
 endif()
 
+if ("${TARGET_PLATFORM}" STREQUAL "win32")
+    set(WSLDEPS_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/wsldeps)
+endif()
+
 set(BIN2CPIO ${CMAKE_CURRENT_LIST_DIR}/tools/bin2cpio/bin2cpio.pl)
 set(WSLG_TS_PLUGIN_DLL "WSLDVCPlugin.dll")
 
@@ -249,6 +253,7 @@ endif()
 # Common link libraries
 link_directories(${WSLDEPS_SOURCE_DIR}/lib/)
 link_directories(${LXUTIL_SOURCE_DIR}/lib/)
+link_directories(${BIN}/lib/)
 set(COMMON_LINK_LIBRARIES
     ws2_32.lib
     Userenv.lib
