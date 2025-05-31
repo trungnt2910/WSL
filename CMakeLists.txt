@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-set(CMAKE_SYSTEM_VERSION 10.0.22000.0)
+set(CMAKE_SYSTEM_VERSION 10.0.22621.0)
 
 project(wsl)
 
