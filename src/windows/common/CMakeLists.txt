@@ -96,7 +96,7 @@ set(HEADERS
 add_library(common STATIC ${SOURCES} ${HEADERS})
 add_dependencies(common wslserviceidl localization wslservicemc wslinstalleridl)
 
-if (NOT "${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
+if ("${TARGET_PLATFORM}" MATCHES "^(win32|arm)$")
     add_dependencies(common wsldeps)
 endif()
 
